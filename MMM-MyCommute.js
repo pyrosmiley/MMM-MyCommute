@@ -49,7 +49,9 @@ Module.register('MMM-MyCommute', {
         label: 'Pearson Airport',
         time: null
       }
-    ]
+    ],
+    showCalendarEvents: false,
+    calendarEventConfig: {}
   },
 
   // Define required scripts.
@@ -493,6 +495,41 @@ Module.register('MMM-MyCommute', {
     if ( notification == 'DOM_OBJECTS_CREATED' && !this.inWindow) {
       this.hide(0, {lockString: this.identifier});
       this.isHidden = true;
+    }
+
+    if (notification === 'CALENDAR_EVENTS' && this.config.showCalendarEvents) { 
+      // clear previously added event destinations (in reverse order, to prevent index shifts messing up splice())
+      var destinationsToRemove = [];
+      for(var i = this.config.destinations.length-1; i >= 0; i--) {
+        if (this.config.destinations[i].isEventDestination) {
+          destinationsToRemove.push(i);
+        }
+      }
+      destinationsToRemove.forEach(function(i) {
+        this.config.destinations.splice(i, 1);
+      }, this);
+
+      // add data for each event with title and location, up to as config.showCalendarEvents number
+      var eventsAdded = 0;
+      for (var e in payload) {
+        var event = payload[e];
+        if (event && event.title && event.location) {
+          var d = JSON.parse(JSON.stringify(this.config.calendarEventConfig)); // hacky but simple "clone object"
+          d.label = event.title;
+          d.destination = event.location;
+          d.isEventDestination = true;
+          this.config.destinations.push(d);
+
+          if (++eventsAdded >= this.config.showCalendarEvents) {
+            break;
+          }
+        }
+      }
+
+      // toggle extra refresh if calendar just pushed more events than we knew about before (e.g. on initial startup)
+      if (eventsAdded > destinationsToRemove.length) {
+        this.getData();
+      }      
     }
   }
 
