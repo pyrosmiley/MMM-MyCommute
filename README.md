@@ -93,10 +93,18 @@ If you don’t want a header, then just omit it.
       <td><code>destinations</code></td>
       <td>An array of destinations to which you would like to see commute times.<br><br><strong>Type:</strong> <code>array</code> of objects.<br>See below for destination options.</td>
     </tr>
+    <tr>
+      <td><code>showCalendarEvents</code></td>
+      <td>Whether to show extra destination for broadcasted calendar events with locations, and how many.<br><br><strong>Type:</strong> <code>false</code> or <code>integer</code> (maximum amount of shown event destinations).<br>Defaults to <code>false</code></td>
+    </tr>
+    <tr>
+      <td><code>calendarEventConfig</code></td>
+      <td>Options to use for event destinations.<br><br><strong>Type:</strong> <code>object</code> (same as normal destination options).<br>Defaults to <code>{}</code> (no specific configuration)</td>
+    </tr>
   </tbody>
 </table>
 
-Each object in the `destinations` array can have the following parameters:
+Each object in the `destinations` array (and `calendarEventConfig`) can have the following parameters:
 
 <table>
   <thead>
@@ -108,11 +116,11 @@ Each object in the `destinations` array can have the following parameters:
   <tbody>
     <tr>
       <td><code>destination</code></td>
-      <td><strong>REQUIRED</strong> The address of the destination<br><br><strong>Type:</strong> <code>string</code></td>
+      <td><strong>REQUIRED</strong> The address of the destination<br><br><strong>Type:</strong> <code>string</code><br>For `calendarEventConfig` automatically filled with the event location from calendar entry</td>
     </tr>
     <tr>
       <td><code>label</code></td>
-      <td><strong>REQUIRED</strong> How you would like this displayed on your MagicMirror.<br><br><strong>Type:</strong> <code>string</code></td>
+      <td><strong>REQUIRED</strong> How you would like this displayed on your MagicMirror.<br><br><strong>Type:</strong> <code>string</code><br>For `calendarEventConfig` automatically filled with the event title from calendar entry</td>
     </tr>
     <tr>
       <td><code>mode</code></td>
