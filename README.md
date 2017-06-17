@@ -116,11 +116,11 @@ Each object in the `destinations` array (and `calendarEventConfig`) can have the
   <tbody>
     <tr>
       <td><code>destination</code></td>
-      <td><strong>REQUIRED</strong> The address of the destination<br><br><strong>Type:</strong> <code>string</code><br>For `calendarEventConfig` automatically filled with the event location from calendar entry</td>
+      <td><strong>REQUIRED</strong> The address of the destination<br><br><strong>Type:</strong> <code>string</code><br><br>Not used in <code>calendarEventConfig</code> (automatically set to calendar event location)</td>
     </tr>
     <tr>
       <td><code>label</code></td>
-      <td><strong>REQUIRED</strong> How you would like this displayed on your MagicMirror.<br><br><strong>Type:</strong> <code>string</code><br>For `calendarEventConfig` automatically filled with the event title from calendar entry</td>
+      <td><strong>REQUIRED</strong> How you would like this displayed on your MagicMirror.<br><br><strong>Type:</strong> <code>string</code><br><br>Not used in <code>calendarEventConfig</code> (automatically set to calendar event title)</td>
     </tr>
     <tr>
       <td><code>mode</code></td>

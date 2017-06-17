@@ -271,7 +271,7 @@ Module.register('MMM-MyCommute', {
         params += '&avoid=' + sanitizedAvoidOptions;
       }
 
-    }
+    } 
 
     params += '&departure_time=now'; //needed for time based on traffic conditions
 
@@ -295,7 +295,7 @@ Module.register('MMM-MyCommute', {
     var timeEl = document.createElement("span");
     timeEl.classList.add("travel-time");
     if (timeInTraffic != null) {
-      timeEl.innerHTML = Math.floor(Number(timeInTraffic) / 60) + " min";
+      timeEl.innerHTML = this.timeToString(timeInTraffic);
 
       var variance = timeInTraffic / time;
       if (this.config.colorCodeTravelTime) {            
@@ -309,12 +309,26 @@ Module.register('MMM-MyCommute', {
       }
 
     } else {
-      timeEl.innerHTML = Math.floor(Number(time) / 60) + " min";
+      timeEl.innerHTML = this.timeToString(time);
       timeEl.classList.add("status-good");
     }
 
     return timeEl;
 
+  },
+
+  timeToString: function(time) {
+    var result = "";
+    var totalSeconds = Number(time);
+    var hours = Math.floor(totalSeconds / 60 / 60);
+    if (hours > 0) {
+      result = "" + hours + " h"
+    }
+    var minutes = Math.round(totalSeconds / 60) - hours * 60;
+    if (minutes > 0) {
+      result += " " + minutes + " min";
+    }
+    return result;
   },
 
   getTransitIcon: function(dest, route) {
