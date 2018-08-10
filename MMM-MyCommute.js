@@ -1,7 +1,7 @@
 
 /*********************************
 
-  Magic Mirror Module: 
+  Magic Mirror Module:
   MMM-MyCommute
   By Jeff Clarke
 
@@ -10,7 +10,7 @@
   https://github.com/domsen123/mrx-work-traffic
 
   MIT Licensed
- 
+
 *********************************/
 
 Module.register('MMM-MyCommute', {
@@ -50,7 +50,7 @@ Module.register('MMM-MyCommute', {
         time: null
       }
     ],
-    showCalendarEvents: false,
+    showCalendarEvents: true,
     calendarEventConfig: {}
   },
 
@@ -58,7 +58,7 @@ Module.register('MMM-MyCommute', {
   getScripts: function() {
     return ["moment.js"];
   },
-  
+
   // Define required styles.
   getStyles: function () {
     return ["MMM-MyCommute.css", "font-awesome.css"];
@@ -113,7 +113,7 @@ Module.register('MMM-MyCommute', {
     'gondola_lift':     'gondola',
     'funicular':        'gondola',
     'other':            'streetcar'
-  },  
+  },
 
   /*
     Poll Frequency
@@ -124,7 +124,7 @@ Module.register('MMM-MyCommute', {
     so if you set this to be too frequent, it's pretty
     easy to blow your request quota.
   */
-  POLL_FREQUENCY : 10 * 60 * 1000, //poll every 10 minutes
+  POLL_FREQUENCY : 15 * 60 * 1000, //poll every 10 minutes
 
   start: function() {
 
@@ -141,7 +141,7 @@ Module.register('MMM-MyCommute', {
     setInterval(function() {
       self.getData()
     }, this.POLL_FREQUENCY);
-      
+
   },
 
   /*
@@ -196,13 +196,13 @@ Module.register('MMM-MyCommute', {
         if ( this.isInWindow( destStartTime, destEndTime, destHideDays ) ) {
           var url = 'https://maps.googleapis.com/maps/api/directions/json' + this.getParams(d);
           destinations.push({ url:url, config: d});
-          // console.log(url);          
+          // console.log(url);
         }
 
       }
       this.inWindow = true;
 
-      if (destinations.length > 0) {        
+      if (destinations.length > 0) {
         this.sendSocketNotification("GOOGLE_TRAFFIC_GET", {destinations: destinations, instanceId: this.identifier});
       } else {
         this.hide(1000, {lockString: this.identifier});
@@ -222,15 +222,15 @@ Module.register('MMM-MyCommute', {
   getParams: function(dest) {
 
     var params = '?';
-    params += 'origin=' + encodeURIComponent(this.config.origin);
-    params += '&destination=' + encodeURIComponent(dest.destination);
+    params += 'origin=' + encodeURIComponent(dest.destination);
+    params += '&destination=' + encodeURIComponent(this.config.origin);
     params += '&key=' + this.config.apikey;
 
     //travel mode
     var mode = 'driving';
     if (dest.mode && this.travelModes.indexOf(dest.mode) != -1) {
       mode = dest.mode;
-    } 
+    }
     params += '&mode=' + mode;
 
     //transit mode if travelMode = 'transit'
@@ -245,7 +245,7 @@ Module.register('MMM-MyCommute', {
       if (sanitizedTransitModes.length > 0) {
         params += '&transit_mode=' + sanitizedTransitModes;
       }
-    } 
+    }
     if (dest.alternatives == true) {
       params += '&alternatives=true';
     }
@@ -256,7 +256,7 @@ Module.register('MMM-MyCommute', {
         waypoints[i] = "via:" + encodeURIComponent(waypoints[i]);
       }
       params += '&waypoints=' + waypoints.join("|");
-    } 
+    }
 
     //avoid
     if (dest.avoid) {
@@ -271,13 +271,13 @@ Module.register('MMM-MyCommute', {
         params += '&avoid=' + sanitizedAvoidOptions;
       }
 
-    } 
+    }
 
     params += '&departure_time=now'; //needed for time based on traffic conditions
 
     return params;
 
-  },  
+  },
 
   svgIconFactory: function(glyph) {
 
@@ -286,7 +286,7 @@ Module.register('MMM-MyCommute', {
     var use = document.createElementNS('http://www.w3.org/2000/svg', "use");
     use.setAttributeNS("http://www.w3.org/1999/xlink", "href", "modules/MMM-MyCommute/icon_sprite.svg#" + glyph);
     svg.appendChild(use);
-    
+
     return(svg);
   },
 
@@ -298,7 +298,7 @@ Module.register('MMM-MyCommute', {
       timeEl.innerHTML = this.timeToString(timeInTraffic);
 
       var variance = timeInTraffic / time;
-      if (this.config.colorCodeTravelTime) {            
+      if (this.config.colorCodeTravelTime) {
         if (variance > this.config.poorTimeThreshold) {
           timeEl.classList.add("status-poor");
         } else if (variance > this.config.moderateTimeThreshold) {
@@ -352,7 +352,7 @@ Module.register('MMM-MyCommute', {
 
   buildTransitSummary: function(transitInfo, summaryContainer) {
 
-    for (var i = 0; i < transitInfo.length; i++) {    
+    for (var i = 0; i < transitInfo.length; i++) {
 
       var transitLeg = document.createElement("span");
         transitLeg.classList.add('transit-leg');
@@ -371,7 +371,7 @@ Module.register('MMM-MyCommute', {
   getDom: function() {
 
     var wrapper = document.createElement("div");
-    
+
     if (this.loading) {
       var loading = document.createElement("div");
         loading.innerHTML = this.translate("LOADING");
@@ -426,7 +426,7 @@ Module.register('MMM-MyCommute', {
           if (r.transitInfo) {
 
             symbolIcon = this.getTransitIcon(p.config,r);
-            this.buildTransitSummary(r.transitInfo, summary); 
+            this.buildTransitSummary(r.transitInfo, summary);
 
           } else {
             summary.innerHTML = r.summary;
@@ -452,7 +452,7 @@ Module.register('MMM-MyCommute', {
 
           if (r.transitInfo) {
             symbolIcon = this.getTransitIcon(p.config,r);
-            this.buildTransitSummary(r.transitInfo, summary); 
+            this.buildTransitSummary(r.transitInfo, summary);
 
           } else {
             summary.innerHTML = r.summary;
@@ -460,20 +460,20 @@ Module.register('MMM-MyCommute', {
           routeSummaryOuter.appendChild(summary);
           row.appendChild(routeSummaryOuter);
 
-        } 
+        }
 
       }
 
 
 
 
-      
+
 
       var svg = this.svgIconFactory(symbolIcon);
       icon.appendChild(svg);
       row.appendChild(icon);
-      
-      
+
+
 
       wrapper.appendChild(row);
     }
@@ -481,7 +481,7 @@ Module.register('MMM-MyCommute', {
 
     return wrapper;
   },
-  
+
   socketNotificationReceived: function(notification, payload) {
     if ( notification === 'GOOGLE_TRAFFIC_RESPONSE' + this.identifier ) {
 
@@ -497,7 +497,7 @@ Module.register('MMM-MyCommute', {
         }
       } else {
         this.updateDom();
-        this.show(1000, {lockString: this.identifier});        
+        this.show(1000, {lockString: this.identifier});
       }
       this.isHidden = false;
     }
@@ -511,7 +511,7 @@ Module.register('MMM-MyCommute', {
       this.isHidden = true;
     }
 
-    if (notification === 'CALENDAR_EVENTS' && this.config.showCalendarEvents) { 
+    if (notification === 'CALENDAR_EVENTS' && this.config.showCalendarEvents) {
       // clear previously added event destinations (in reverse order, to prevent index shifts messing up splice())
       var destinationsToRemove = [];
       for(var i = this.config.destinations.length-1; i >= 0; i--) {
@@ -543,7 +543,7 @@ Module.register('MMM-MyCommute', {
       // toggle extra refresh if calendar just pushed more events than we knew about before (e.g. on initial startup)
       if (eventsAdded > destinationsToRemove.length) {
         this.getData();
-      }      
+      }
     }
   }
 
